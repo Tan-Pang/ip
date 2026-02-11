@@ -1,6 +1,13 @@
+package happy;
+
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
+
+import happy.task.Deadline;
+import happy.task.Event;
+import happy.task.Task;
+import happy.task.ToDo;
 
 public class Happy {
     private static final List<String> COMMANDS = List.of(

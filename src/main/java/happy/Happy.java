@@ -3,6 +3,7 @@ package happy;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 import happy.task.Deadline;
 import happy.task.Event;
@@ -11,7 +12,7 @@ import happy.task.ToDo;
 
 public class Happy {
     private static final List<String> COMMANDS = List.of(
-            "hi", "hello", "bye", "list", "mark", "unmark", "todo", "deadline", "event"
+            "hi", "hello", "bye", "list", "mark", "unmark", "todo", "deadline", "event", "delete"
     );
     private static final List<String> ACTIONS = List.of(
             "todo", "deadline", "event"
@@ -19,7 +20,7 @@ public class Happy {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Task[] list = new Task[100];
+        ArrayList<Task> list = new ArrayList<>();
         int currIndex = 0;
         printLogo("intro");
         program(list, currIndex, in);
@@ -29,16 +30,15 @@ public class Happy {
     /**
      *Method that runs while interacting with user.
      */
-    private static void program(Task[] list, int currIndex, Scanner in) {
+    private static void program(ArrayList<Task> list, int currIndex, Scanner in) {
         String line;
         boolean valid;
-        Task[] currList;
         do {
             valid = false;
             line = in.nextLine();
             while (!valid) {
                 try {
-                    inputChecker(line);
+                    inputChecker(line, currIndex);
                     valid = true;
                 } catch (HappyException msg) {
                     printErrorMessage(msg);
@@ -51,16 +51,18 @@ public class Happy {
             if (line.equals("hi") || line.equals("hello")) {
                 printLogo("hi");
             } else if (line.equals("list")) {
-                currList = Arrays.copyOf(list, currIndex);
                 printLogo("task");
                 for (int i = 0; i < currIndex; i++) {
-                    printCurrItem(i, currList);
+                    printCurrItem(i, list);
                 }
                 printLogo("line");
             } else if (line.startsWith("mark")) {
                 printMarkOrUnmark(line, list, "mark");
             } else if (line.startsWith("unmark")) {
                 printMarkOrUnmark(line, list, "unmark");
+            } else if (line.startsWith("delete")) {
+                deleteTask(line, list);
+                currIndex--;
             } else {
                 addTask(line, list, currIndex);
                 currIndex++;
@@ -71,7 +73,7 @@ public class Happy {
     /**
      *Method to check if user input is valid or not.
      */
-    private static void inputChecker(String line) throws HappyException {
+    private static void inputChecker(String line, int currIndex) throws HappyException {
         String[] words = line.split(" ");
         String command = words[0];
         if (!COMMANDS.contains(command)) {
@@ -103,6 +105,19 @@ public class Happy {
                     """);
             }
             break;
+        case "delete":
+            if (words.length > 2 || !words[1].matches("\\d+")) {
+                throw new HappyException("""
+                        Please tell me what task number you want me to delete thank you!
+                    """);
+            }
+            int deleteIndex = Integer.parseInt(words[1]);
+            if (deleteIndex < 1 || deleteIndex > currIndex) {
+                throw new HappyException("""
+                        Index out of bounds! Please give me a valid task number!
+                    """);
+            }
+            break;
         }
     }
 
@@ -118,7 +133,7 @@ public class Happy {
     /**
      *Method to add new task to Task[] list.
      */
-    private static void addTask(String line, Task[] list, int currIndex) {
+    private static void addTask(String line, ArrayList<Task> list, int currIndex) {
         Task t;
         if (line.startsWith("todo")) {
             String description = line.replace("todo", "").trim();
@@ -138,15 +153,24 @@ public class Happy {
             String to = splitTo[1].trim();
             t = new Event(description, from, to);
         }
-        printTask(t, currIndex);
-        list[currIndex] = t;
+        printTask(t, currIndex, "add");
+        list.add(t);
     }
 
-    /**
-     *Method to print added task with appropriate formatting.
-     */
-    private static void printTask(Task t, int currIndex) {
-        printLogo("add");
+    private static void deleteTask(String line, ArrayList<Task> list) {
+        String indexString = line.replace("delete", "").trim();
+        int index = Integer.parseInt(indexString) - 1;
+        Task deletedTask = list.get(index);
+        list.remove(index);
+        printTask(deletedTask, index - 1, "delete");
+    }
+
+
+        /**
+         *Method to print added task with appropriate formatting.
+         */
+    private static void printTask(Task t, int currIndex, String action) {
+        printLogo(action);
         System.out.println("      " + t);
         System.out.printf("    Now you have %d tasks in the list.%n", currIndex + 1);
         printLogo("line");
@@ -191,6 +215,10 @@ public class Happy {
             ________________________________________________________________________________
             Got it. I've added this task:
         """;
+        String deleteLogo = """
+            ________________________________________________________________________________
+            Noted. I've removed this task:
+        """;
 
         String logo;
         switch (logoString) {
@@ -218,6 +246,9 @@ public class Happy {
         case "add":
             logo = addLogo;
             break;
+        case "delete":
+            logo = deleteLogo;
+            break;
         default: logo = "";
         }
         System.out.print(logo);
@@ -233,10 +264,10 @@ public class Happy {
     /**
      *Method to mark/unmark item and print it out with appropriate formatting.
      */
-    private static void printMarkOrUnmark(String line, Task[] list, String action) {
+    private static void printMarkOrUnmark(String line, ArrayList<Task> list, String action) {
         String[] words = line.split(" ");
         int markIndex = Integer.parseInt(words[1]) - 1;
-        Task markItem = list[markIndex];
+        Task markItem = list.get(markIndex);
         if (action.equals("mark")) {
             markItem.markAsDone();
         } else {
@@ -250,8 +281,8 @@ public class Happy {
     /**
      *Method to print the current item in the list.
      */
-    private static void printCurrItem(int i, Task[] currList) {
+    private static void printCurrItem(int i, ArrayList<Task> currList) {
         System.out.printf("    %d.", i + 1);
-        System.out.println(currList[i].toString());
+        System.out.println(currList.get(i));
     }
 }

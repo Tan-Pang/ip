@@ -1,5 +1,7 @@
 package happy;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +11,10 @@ import happy.task.Deadline;
 import happy.task.Event;
 import happy.task.Task;
 import happy.task.ToDo;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Happy {
     private static final List<String> COMMANDS = List.of(
@@ -22,8 +28,16 @@ public class Happy {
         Scanner in = new Scanner(System.in);
         ArrayList<Task> list = new ArrayList<>();
         int currIndex = 0;
+        String filePath = "./data/happy.txt";
+        File f = new File(filePath);
+        readFileContents(f, tasks);
         printLogo("intro");
         program(list, currIndex, in);
+        try {
+            writeFileContents(filePath, f, tasks);
+        } catch (IOException e) {
+            System.out.println("Failed to update tasks.");
+        }
         printLogo("bye");
     }
 
@@ -284,5 +298,56 @@ public class Happy {
     private static void printCurrItem(int i, ArrayList<Task> currList) {
         System.out.printf("    %d.", i + 1);
         System.out.println(currList.get(i));
+    }
+
+    private static String taskToString(Task task) {
+        String taskString = "unmarked";
+        if (task.getStatusIcon().equals("X")) {
+            taskString = "marked";
+        }
+        if (task instanceof ToDo) {
+            taskString += " todo " + task.getDescription();
+        } else if (task instanceof Deadline) {
+            taskString += " deadline " + task.getDescription() + " by " + ((Deadline) task).getBy();
+        } else {
+            taskString += " event " + task.getDescription() + " from " + ((Event) task).getFrom() + " to " + ((Event) task).getTo();
+        }
+        return taskString;
+    }
+
+    private static void readFileContents(File f, ArrayList<Task> tasks) throws FileNotFoundException {
+        String[] inputLine;
+        Task task;
+        String mark;
+        int currIndex = 0;
+        Scanner s = new Scanner(f);
+        while (s.hasNext()) {
+            inputLine = s.nextLine().split("\\|");
+            addTask(inputLine[1], tasks, currIndex);
+            task = tasks.get(currIndex);
+            mark = inputLine[0];
+            if (mark.equals("marked")) {
+                task.markAsDone();
+            }
+            currIndex++;
+        }
+    }
+
+    private static void writeFileContents(String filePath, File f, ArrayList<Task> tasks) throws IOException {
+        if (!f.exists()) {
+            boolean created = f.createNewFile();
+            if (created) {
+                System.out.println("Created a new file at '" + filePath + "' to store tasks.");
+            }
+        }
+        String taskString;
+        FileWriter fileClearer = new FileWriter(filePath);
+        fileClearer.write("");
+        FileWriter fw = new FileWriter(filePath, true);
+        for (Task task: tasks) {
+            taskString = taskToString(task);
+            fw.write(taskString);
+            fw.close();
+        }
     }
 }

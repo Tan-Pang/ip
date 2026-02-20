@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 import happy.task.Deadline;
 import happy.task.Event;
@@ -26,13 +25,17 @@ public class Happy {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        ArrayList<Task> list = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
         int currIndex = 0;
         String filePath = "./data/happy.txt";
         File f = new File(filePath);
-        readFileContents(f, tasks);
+        try {
+            currIndex = readFileContents(f, tasks);
+        } catch (FileNotFoundException e) {
+            System.out.println("Failed to read tasks.");
+        }
         printLogo("intro");
-        program(list, currIndex, in);
+        program(tasks, currIndex, in);
         try {
             writeFileContents(filePath, f, tasks);
         } catch (IOException e) {
@@ -44,7 +47,7 @@ public class Happy {
     /**
      *Method that runs while interacting with user.
      */
-    private static void program(ArrayList<Task> list, int currIndex, Scanner in) {
+    private static void program(ArrayList<Task> tasks, int currIndex, Scanner in) {
         String line;
         boolean valid;
         do {
@@ -67,18 +70,19 @@ public class Happy {
             } else if (line.equals("list")) {
                 printLogo("task");
                 for (int i = 0; i < currIndex; i++) {
-                    printCurrItem(i, list);
+                    printCurrItem(i, tasks);
                 }
                 printLogo("line");
             } else if (line.startsWith("mark")) {
-                printMarkOrUnmark(line, list, "mark");
+                printMarkOrUnmark(line, tasks, "mark");
             } else if (line.startsWith("unmark")) {
-                printMarkOrUnmark(line, list, "unmark");
+                printMarkOrUnmark(line, tasks, "unmark");
             } else if (line.startsWith("delete")) {
-                deleteTask(line, list);
+                deleteTask(line, tasks);
                 currIndex--;
             } else {
-                addTask(line, list, currIndex);
+                Task t = addTask(line, tasks);
+                printTask(t, currIndex, "add");
                 currIndex++;
             }
         } while (true);
@@ -147,7 +151,7 @@ public class Happy {
     /**
      *Method to add new task to Task[] list.
      */
-    private static void addTask(String line, ArrayList<Task> list, int currIndex) {
+    private static Task addTask(String line, ArrayList<Task> list) {
         Task t;
         if (line.startsWith("todo")) {
             String description = line.replace("todo", "").trim();
@@ -155,9 +159,7 @@ public class Happy {
         } else if (line.startsWith("deadline")) {
             String[] splitBy = line.split("\\bby\\b");
             String description = splitBy[0].replace("deadline", "").trim();
-            System.out.println(Arrays.toString(splitBy));
             String deadline = splitBy[1].trim();
-            System.out.println(deadline);
             t = new Deadline(description, deadline);
         } else { //line starts with "event"
             String[] splitFrom = line.split("\\bfrom\\b");
@@ -167,8 +169,8 @@ public class Happy {
             String to = splitTo[1].trim();
             t = new Event(description, from, to);
         }
-        printTask(t, currIndex, "add");
         list.add(t);
+        return t;
     }
 
     private static void deleteTask(String line, ArrayList<Task> list) {
@@ -306,16 +308,16 @@ public class Happy {
             taskString = "marked";
         }
         if (task instanceof ToDo) {
-            taskString += " todo " + task.getDescription();
+            taskString += "|todo " + task.getDescription();
         } else if (task instanceof Deadline) {
-            taskString += " deadline " + task.getDescription() + " by " + ((Deadline) task).getBy();
+            taskString += "|deadline " + task.getDescription() + " by " + ((Deadline) task).getBy();
         } else {
-            taskString += " event " + task.getDescription() + " from " + ((Event) task).getFrom() + " to " + ((Event) task).getTo();
+            taskString += "|event " + task.getDescription() + " from " + ((Event) task).getFrom() + " to " + ((Event) task).getTo();
         }
         return taskString;
     }
 
-    private static void readFileContents(File f, ArrayList<Task> tasks) throws FileNotFoundException {
+    private static int readFileContents(File f, ArrayList<Task> tasks) throws FileNotFoundException {
         String[] inputLine;
         Task task;
         String mark;
@@ -323,7 +325,7 @@ public class Happy {
         Scanner s = new Scanner(f);
         while (s.hasNext()) {
             inputLine = s.nextLine().split("\\|");
-            addTask(inputLine[1], tasks, currIndex);
+            addTask(inputLine[1], tasks);
             task = tasks.get(currIndex);
             mark = inputLine[0];
             if (mark.equals("marked")) {
@@ -331,23 +333,26 @@ public class Happy {
             }
             currIndex++;
         }
+        return currIndex;
     }
 
     private static void writeFileContents(String filePath, File f, ArrayList<Task> tasks) throws IOException {
         if (!f.exists()) {
+            File parent = f.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();   // 🔥 create ./data directory
+            }
             boolean created = f.createNewFile();
             if (created) {
                 System.out.println("Created a new file at '" + filePath + "' to store tasks.");
             }
         }
         String taskString;
-        FileWriter fileClearer = new FileWriter(filePath);
-        fileClearer.write("");
-        FileWriter fw = new FileWriter(filePath, true);
-        for (Task task: tasks) {
-            taskString = taskToString(task);
-            fw.write(taskString);
-            fw.close();
+        try (FileWriter fw = new FileWriter(filePath)) {
+            for (Task task : tasks) {
+                taskString = taskToString(task);
+                fw.write(taskString + System.lineSeparator());
+            }
         }
     }
 }

@@ -33,4 +33,4 @@ To find a task with a keyword, type **"find"** and the keyword to list out all t
 
 ## Exit Happy
 
-To exit __Happy__, type **"bye"**.
+To exit _Happy_, type **"bye"**.

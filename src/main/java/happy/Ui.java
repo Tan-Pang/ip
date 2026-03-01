@@ -58,6 +58,10 @@ public class Ui {
             ________________________________________________________________________________
             Noted. I've removed this task:
         """;
+        String findLogo = """
+            ________________________________________________________________________________
+            Here are the matching tasks in your list:
+        """;
 
         String logo;
         switch (logoString) {
@@ -87,6 +91,9 @@ public class Ui {
             break;
         case "delete":
             logo = deleteLogo;
+            break;
+        case "find":
+            logo = findLogo;
             break;
         default: logo = "";
         }
@@ -126,6 +133,12 @@ public class Ui {
     public void printCurrItem(int index, Task task) {
         System.out.printf("    %d.", index + 1);
         System.out.println(task);
+    }
+
+    public void printEmptyListMessage() {
+        printLogo("line");
+        System.out.println("    Sorry there are no matching tasks!");
+        printLogo("line");
     }
 
 }

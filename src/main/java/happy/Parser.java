@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 
 public class Parser {
     private static final List<String> COMMANDS = List.of(
-            "hi", "hello", "bye", "list", "mark", "unmark", "todo", "deadline", "event", "delete"
+            "hi", "hello", "bye", "list", "mark", "unmark", "todo", "deadline", "event", "delete", "find"
     );
     private static final List<String> ACTIONS = List.of(
             "todo", "deadline", "event"
@@ -41,17 +41,15 @@ public class Parser {
                             Please add something!
                         """);
             }
-
         }
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
+        for (String word : words) {
             if (word.matches("\\d{4}-\\d{2}-\\d{2}")) {
                 try {
-                    LocalDate date = LocalDate.parse(word);
+                    LocalDate.parse(word);
                 } catch (DateTimeParseException e) {
                     throw new HappyException("""
-                            Please input a valid date!
-                        """);
+                                Please input a valid date!
+                            """);
                 }
             }
         }
@@ -59,28 +57,48 @@ public class Parser {
         case "deadline":
             if (!wordList.contains("by")) {
                 throw new HappyException("""
-                        So sorry but Deadline type requires a deadline using the keyword "by".
-                    """);
+                            So sorry but Deadline type requires a deadline using the keyword "by".
+                        """);
             }
             break;
         case "event":
             if (!wordList.contains("to") || !wordList.contains("from")) {
                 throw new HappyException("""
-                        So sorry but Event type requires a duration using the keywords "to" and "from".
-                    """);
+                            So sorry but Event type requires a duration using the keywords "to" and "from".
+                        """);
             }
             break;
         case "delete":
             if (words.length != 2 || !words[1].matches("\\d+")) {
                 throw new HappyException("""
-                        Please tell me what task number you want me to delete thank you!
-                    """);
+                            Please tell me what task number you want me to delete thank you!
+                        """);
             }
             int deleteIndex = Integer.parseInt(words[1]);
             if (deleteIndex < 1 || deleteIndex > currIndex) {
                 throw new HappyException("""
-                        Index out of bounds! Please give me a valid task number!
-                    """);
+                            Index out of bounds! Please give me a valid task number!
+                        """);
+            }
+            break;
+        case "find":
+            if (words.length != 2) {
+                throw new HappyException("""
+                            Sorry I can't find nothing!
+                        """);
+            }
+            break;
+        case "mark":
+            try {
+                if (words.length != 2 || Integer.parseInt(words[1]) > currIndex || Integer.parseInt(words[1]) < 0) {
+                    throw new HappyException("""
+                                Sorry invalid task to mark!
+                            """);
+                }
+            } catch (NumberFormatException e) {
+                throw new HappyException("""
+                                Please enter an index to mark the task!
+                            """);
             }
             break;
         }

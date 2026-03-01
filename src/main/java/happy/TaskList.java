@@ -23,8 +23,7 @@ public class TaskList {
     public Task addTask(String line) throws HappyException {
         Task t;
         String[] words = line.split(" ");
-        for (int i = 0; i < words.length; i++) {
-            String word = words[i];
+        for (String word : words) {
             if (word.matches("\\d{4}-\\d{2}-\\d{2}")) {
                 try {
                     LocalDate date = LocalDate.parse(word);
@@ -76,6 +75,26 @@ public class TaskList {
         }
         return markItem;
     }
+
+    /**
+     *Method to return an ArrayList of tasks that match with given keyword.
+     */
+    public ArrayList<Task> findTasks(String line) {
+        String keyword = line.replace("find", "").trim();
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            String[] words = task.getDescription().split(" ");
+            for (String word : words) {
+                if (word.equals(keyword)) {
+                    matchingTasks.add(task);
+                    break;
+                }
+            }
+        }
+        return matchingTasks;
+    }
+
+
 
     public ArrayList<Task> getTasks() {
         return tasks;

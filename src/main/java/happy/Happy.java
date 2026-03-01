@@ -79,6 +79,18 @@ public class Happy {
                     storage.save(tasks.getTasks());
                     ui.printMarkOrUnmark(marked, command);
                     break;
+                case "find":
+                    ArrayList<Task> matchingTasks = tasks.findTasks(line);
+                    if (matchingTasks.isEmpty()) {
+                        ui.printEmptyListMessage();
+                    } else {
+                        ui.printLogo("find");
+                        for (int i = 0; i < matchingTasks.size(); i++) {
+                            ui.printCurrItem(i, matchingTasks.get(i));
+                        }
+                        ui.printLogo("line");
+                    }
+                    break;
                 }
 
             } catch (HappyException e) {

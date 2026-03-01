@@ -1,5 +1,8 @@
 package happy;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import happy.task.Deadline;
@@ -17,8 +20,22 @@ public class TaskList {
     /**
      *Method to add new task to Task[] list.
      */
-    public Task addTask(String line) {
+    public Task addTask(String line) throws HappyException {
         Task t;
+        String[] words = line.split(" ");
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                try {
+                    LocalDate date = LocalDate.parse(word);
+                    line = line.replace(word, date.format(DateTimeFormatter.ofPattern("MMM d yyyy")).trim());
+                } catch (DateTimeParseException e) {
+                    throw new HappyException("""
+                                Please input a valid date!
+                            """);
+                }
+            }
+        }
         if (line.startsWith("todo")) {
             String description = line.replace("todo", "").trim();
             t = new ToDo(description);

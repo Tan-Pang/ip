@@ -4,7 +4,6 @@ import happy.task.Task;
 
 public class Ui {
     public Ui() {
-
     }
 
     /**

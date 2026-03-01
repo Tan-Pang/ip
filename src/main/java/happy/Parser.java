@@ -2,6 +2,8 @@ package happy;
 
 import java.util.Arrays;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Parser {
     private static final List<String> COMMANDS = List.of(
@@ -12,7 +14,6 @@ public class Parser {
     );
 
     public Parser() {
-
     }
 
     /**
@@ -39,6 +40,18 @@ public class Parser {
                             I can't add an empty task!
                             Please add something!
                         """);
+
+        }
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                try {
+                    LocalDate date = LocalDate.parse(word);
+                } catch (DateTimeParseException e) {
+                    throw new HappyException("""
+                            Please input a valid date!
+                        """);
+                }
             }
         }
         switch (command) {

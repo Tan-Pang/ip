@@ -40,6 +40,7 @@ public class Parser {
                             I can't add an empty task!
                             Please add something!
                         """);
+            }
 
         }
         for (int i = 0; i < words.length; i++) {

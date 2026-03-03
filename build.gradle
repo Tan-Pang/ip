@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'application' // optional, if you have a main() method
+    id 'com.github.johnrengelman.shadow' version '8.1.1' // optional, for shadowJar
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+}
+
+application {
+    mainClass = 'happy.Happy'
+}

@@ -16,11 +16,21 @@ public class Storage {
     private final String filePath;
     private final File file;
 
+    /**
+     * Represents the storage of the list of tasks.
+     * @param filePath A relative path to the text file that stores the list of tasks.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
         this.file = new File(filePath);
     }
 
+    /**
+     * Returns the string version of the task as if the user entered it.
+     *
+     * @param task Task object.
+     * @return String that user will type to input that task.
+     */
     public String taskToString(Task task) {
         String taskString = "unmarked";
         if (task.isDone()) {
@@ -36,6 +46,13 @@ public class Storage {
         return taskString;
     }
 
+    /**
+     * Returns the tasks list in the form of ArrayList by loading the text in the text file that stores the tasks.
+     *
+     * @param tasks ArrayList of Task objects.
+     * @return Updated tasks list.
+     * @throws FileNotFoundException If the input text file does not exist.
+     */
     public ArrayList<Task> load(ArrayList<Task> tasks) throws FileNotFoundException {
         try (Scanner s = new Scanner(file)) {
             Task task;
@@ -71,6 +88,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the tasks in tasks list to the text file. Creates a new text file with the given file path if it does
+     * not exist.
+     *
+     * @param tasks ArrayList of Task objects.
+     * @throws IOException If the input text file does not exist.
+     */
     public void save(ArrayList<Task> tasks) throws IOException {
         if (!file.exists()) {
             File parent = file.getParentFile();

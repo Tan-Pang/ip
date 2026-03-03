@@ -7,7 +7,8 @@ public class Ui {
     }
 
     /**
-     *Method to print exception error message.
+     *Print exception error message.
+     * @param e Error message to be printed.
      */
     public void printErrorMessage(HappyException e) {
         printLogo("line");
@@ -16,7 +17,8 @@ public class Ui {
     }
 
     /**
-     *Method to print the requested string(s).
+     *Print requested string(s).
+     * @param logoString The string to be printed.
      */
     public void printLogo(String logoString) {
         String introLogo = """
@@ -101,7 +103,10 @@ public class Ui {
     }
 
     /**
-     *Method to print added task with appropriate formatting.
+     *Print added/deleted task with appropriate formatting.
+     * @param t Task that was added/deleted.
+     * @param currIndex Number of tasks in tasks list.
+     * @param action add or delete task.
      */
     public void printTask(Task t, int currIndex, String action) {
         printLogo(action);
@@ -110,16 +115,14 @@ public class Ui {
         printLogo("line");
     }
 
-
-    /**
-     *Method to print newly marked item.
-     */
     public void printMarkedItem(Task markItem) {
         System.out.println("      " + markItem);
     }
 
     /**
-     *Method to print marked/unmarked item with appropriate formatting.
+     *Print marked/unmarked item with appropriate formatting.
+     * @param markItem Task that is marked/unmarked
+     * @param action Mark or unmark.
      */
     public void printMarkOrUnmark(Task markItem, String action) {
         printLogo(action);
@@ -128,13 +131,18 @@ public class Ui {
     }
 
     /**
-     *Method to print the current item in the list.
+     *Print the current task in the list.
+     * @param index Index of the input task.
+     * @param task The task to be printed
      */
-    public void printCurrItem(int index, Task task) {
+    public void printCurrTask(int index, Task task) {
         System.out.printf("    %d.", index + 1);
         System.out.println(task);
     }
 
+    /**
+     * Print message if there are no matching tasks to the keyword given in find command.
+     */
     public void printEmptyListMessage() {
         printLogo("line");
         System.out.println("    Sorry there are no matching tasks!");

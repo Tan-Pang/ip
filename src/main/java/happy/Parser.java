@@ -1,5 +1,6 @@
 package happy;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.time.LocalDate;
@@ -17,7 +18,11 @@ public class Parser {
     }
 
     /**
-     *Method to check if user input is valid or not.
+     * Checks if user input is valid or not.
+     *
+     * @param line The input from user in the form of a String.
+     * @param currIndex The number of tasks in tasks list.
+     * @throws HappyException If the input is invalid.
      */
     public void inputChecker(String line, int currIndex) throws HappyException {
         if (line == null || line.trim().isEmpty()) {

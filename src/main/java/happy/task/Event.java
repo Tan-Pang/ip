@@ -1,5 +1,9 @@
 package happy.task;
 
+/**
+ * Represents an event task. An Event object extends a Task object with a duration.
+ * Event object contains a description, marker, start time and end time.
+ */
 public class Event extends Task {
 
     protected String from;

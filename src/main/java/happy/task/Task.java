@@ -1,5 +1,10 @@
 package happy.task;
 
+/**
+ * Represents a Task. A Task object corresponds to a task with a description and a marker to indicate done or not
+ * Description is in the form of a String and marker is a boolean where true represents done and false represents
+ * not done.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;

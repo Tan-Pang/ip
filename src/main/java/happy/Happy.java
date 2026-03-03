@@ -54,7 +54,7 @@ public class Happy {
                 case "list":
                     ui.printLogo("task");
                     for (int i = 0; i < tasks.getTasks().size(); i++) {
-                        ui.printCurrItem(i, tasks.getTasks().get(i));
+                        ui.printCurrTask(i, tasks.getTasks().get(i));
                     }
                     ui.printLogo("line");
                     break;
@@ -75,7 +75,7 @@ public class Happy {
 
                 case "mark":
                 case "unmark":
-                    Task marked = tasks.markOrUnmarkItem(line, command);
+                    Task marked = tasks.markOrUnmarkTask(line, command);
                     storage.save(tasks.getTasks());
                     ui.printMarkOrUnmark(marked, command);
                     break;
@@ -86,7 +86,7 @@ public class Happy {
                     } else {
                         ui.printLogo("find");
                         for (int i = 0; i < matchingTasks.size(); i++) {
-                            ui.printCurrItem(i, matchingTasks.get(i));
+                            ui.printCurrTask(i, matchingTasks.get(i));
                         }
                         ui.printLogo("line");
                     }

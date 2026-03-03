@@ -34,3 +34,8 @@ To find a task with a keyword, type **"find"** and the keyword to list out all t
 ## Exit Happy
 
 To exit _Happy_, type **"bye"**.
+
+### Date Format Feature
+
+Any dates in the format **YYYY-MM-DD** will be automatically detected and converted to <Month Date Year>. 
+(eg 2026-05-01 → May 1 2026)

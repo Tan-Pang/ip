@@ -13,12 +13,19 @@ import happy.task.ToDo;
 public class TaskList {
     private final ArrayList<Task> tasks;
 
+    /**
+     * All the operations of tasks list can be found in TaskList. Namely add, delete, mark/unmark and find task.
+     * @param tasks List of current tasks.
+     */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
     /**
-     *Method to add new task to Task[] list.
+     *Add new task to tasks list.
+     * @param line Input task from user.
+     * @return Task that user input in the form of a Task object.
+     * @throws HappyException If the format of date input by user is invalid.
      */
     public Task addTask(String line) throws HappyException {
         Task t;
@@ -56,7 +63,9 @@ public class TaskList {
     }
 
     /**
-     *Method to delete a task and return the deleted task.
+     *Delete a task and return the deleted task.
+     * @param line Input task from user.
+     * @return Task to be deleted.
      */
     public Task deleteTask(String line) {
         String indexString = line.replace("delete", "").trim();
@@ -64,7 +73,13 @@ public class TaskList {
         return tasks.remove(index);
     }
 
-    public Task markOrUnmarkItem(String line, String action) {
+    /**
+     *Mark or Unmark a task in tasks list.
+     * @param line Input task from user.
+     * @param action Mark or Unmark.
+     * @return Task to be marked or unmarked.
+     */
+    public Task markOrUnmarkTask(String line, String action) {
         String[] words = line.split(" ");
         int markIndex = Integer.parseInt(words[1]) - 1;
         Task markItem = tasks.get(markIndex);
@@ -77,7 +92,9 @@ public class TaskList {
     }
 
     /**
-     *Method to return an ArrayList of tasks that match with given keyword.
+     *Returns an ArrayList of tasks that match with given keyword.
+     * @param line Input task from user.
+     * @return List of tasks that contain the keyword.
      */
     public ArrayList<Task> findTasks(String line) {
         String keyword = line.replace("find", "").trim();
@@ -93,8 +110,6 @@ public class TaskList {
         }
         return matchingTasks;
     }
-
-
 
     public ArrayList<Task> getTasks() {
         return tasks;

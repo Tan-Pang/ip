@@ -2,6 +2,9 @@
 
 ![Happy Logo](happylogo.png)
 
+Happy is an interactive chatbot that enables you to keep track of different types of tasks! Here are the commands you
+can give to Happy and some of the features that Happy has!
+
 ## Adding Tasks
 ### Add ToDo Task
 
@@ -37,5 +40,5 @@ To exit _Happy_, type **"bye"**.
 
 ### Date Format Feature
 
-Any dates in the format **YYYY-MM-DD** will be automatically detected and converted to <Month Date Year>. 
+Any dates in the format **YYYY-MM-DD** will be automatically detected and converted to (Month Date Year). 
 (eg 2026-05-01 → May 1 2026)

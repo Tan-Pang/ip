@@ -1,5 +1,5 @@
 unmarked|todo Fetch Milk
-unmarked|event fly to outer space from 19/2/2026 to 1/1/1111111111
+marked|event fly to outer space from 19/2/2026 to 1/1/1111111111
 marked|deadline do homework by never
 unmarked|deadline eat by Mar 1 2026
 unmarked|event starve from Mar 1 2026 to May 2 2027

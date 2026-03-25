@@ -40,58 +40,7 @@ public class Happy {
                 parser.inputChecker(line, tasks.getTasks().size());
                 String command = line.split(" ")[0];
 
-                switch (command) {
-                case "bye":
-                    ui.printLogo("bye");
-                    isRunning = false;
-                    break;
-
-                case "hi":
-                case "hello":
-                    ui.printLogo("hi");
-                    break;
-
-                case "list":
-                    ui.printLogo("task");
-                    for (int i = 0; i < tasks.getTasks().size(); i++) {
-                        ui.printCurrTask(i, tasks.getTasks().get(i));
-                    }
-                    ui.printLogo("line");
-                    break;
-
-                case "todo":
-                case "deadline":
-                case "event":
-                    Task added = tasks.addTask(line);
-                    storage.save(tasks.getTasks());
-                    ui.printTask(added, tasks.getTasks().size() - 1, "add");
-                    break;
-
-                case "delete":
-                    Task deleted = tasks.deleteTask(line);
-                    storage.save(tasks.getTasks());
-                    ui.printTask(deleted, tasks.getTasks().size() - 1, "delete");
-                    break;
-
-                case "mark":
-                case "unmark":
-                    Task marked = tasks.markOrUnmarkTask(line, command);
-                    storage.save(tasks.getTasks());
-                    ui.printMarkOrUnmark(marked, command);
-                    break;
-                case "find":
-                    ArrayList<Task> matchingTasks = tasks.findTasks(line);
-                    if (matchingTasks.isEmpty()) {
-                        ui.printEmptyListMessage();
-                    } else {
-                        ui.printLogo("find");
-                        for (int i = 0; i < matchingTasks.size(); i++) {
-                            ui.printCurrTask(i, matchingTasks.get(i));
-                        }
-                        ui.printLogo("line");
-                    }
-                    break;
-                }
+                isRunning = printCommand(command, isRunning, line);
 
             } catch (HappyException e) {
                 ui.printErrorMessage(e);
@@ -101,6 +50,62 @@ public class Happy {
         }
 
         scanner.close();
+    }
+
+    private boolean printCommand(String command, boolean isRunning, String line) throws HappyException, IOException {
+        switch (command) {
+        case "bye":
+            ui.printLogo("bye");
+            isRunning = false;
+            break;
+
+        case "hi":
+        case "hello":
+            ui.printLogo("hi");
+            break;
+
+        case "list":
+            ui.printLogo("task");
+            for (int i = 0; i < tasks.getTasks().size(); i++) {
+                ui.printCurrTask(i, tasks.getTasks().get(i));
+            }
+            ui.printLogo("line");
+            break;
+
+        case "todo":
+        case "deadline":
+        case "event":
+            Task added = tasks.addTask(line);
+            storage.save(tasks.getTasks());
+            ui.printTask(added, tasks.getTasks().size() - 1, "add");
+            break;
+
+        case "delete":
+            Task deleted = tasks.deleteTask(line);
+            storage.save(tasks.getTasks());
+            ui.printTask(deleted, tasks.getTasks().size() - 1, "delete");
+            break;
+
+        case "mark":
+        case "unmark":
+            Task marked = tasks.markOrUnmarkTask(line, command);
+            storage.save(tasks.getTasks());
+            ui.printMarkOrUnmark(marked, command);
+            break;
+        case "find":
+            ArrayList<Task> matchingTasks = tasks.findTasks(line);
+            if (matchingTasks.isEmpty()) {
+                ui.printEmptyListMessage();
+            } else {
+                ui.printLogo("find");
+                for (int i = 0; i < matchingTasks.size(); i++) {
+                    ui.printCurrTask(i, matchingTasks.get(i));
+                }
+                ui.printLogo("line");
+            }
+            break;
+        }
+        return isRunning;
     }
 
     public static void main(String[] args) {

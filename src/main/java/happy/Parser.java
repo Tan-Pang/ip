@@ -58,6 +58,10 @@ public class Parser {
                 }
             }
         }
+        commandChecker(currIndex, command, wordList, words);
+    }
+
+    private static void commandChecker(int currIndex, String command, List<String> wordList, String[] words) throws HappyException {
         switch (command) {
         case "deadline":
             if (!wordList.contains("by")) {
@@ -94,15 +98,16 @@ public class Parser {
             }
             break;
         case "mark":
+        case "unmark":
             try {
                 if (words.length != 2 || Integer.parseInt(words[1]) > currIndex || Integer.parseInt(words[1]) < 0) {
                     throw new HappyException("""
-                                Sorry invalid task to mark!
+                                Sorry invalid task to mark/unmark!
                             """);
                 }
             } catch (NumberFormatException e) {
                 throw new HappyException("""
-                                Please enter an index to mark the task!
+                                Please enter an index to mark/unmark the task!
                             """);
             }
             break;
